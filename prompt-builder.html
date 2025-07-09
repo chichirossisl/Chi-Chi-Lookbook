@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChiChi Suite – Prompt Builder</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 2rem; background: #fff0f8; color: #4a004a; }
+    textarea { width: 100%; height: 150px; font-size: 1rem; padding: 1rem; border-radius: 12px; border: 2px solid #ffaadd; }
+    button {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #ff66b2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #e0559d;
+    }
+    .status { margin-top: 1rem; font-size: 0.95rem; color: #007700; display: none; }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDe8u_h3XoWe9kEx2vYif9r4eM3oLpcctQ",
+      authDomain: "chichisuite.firebaseapp.com",
+      projectId: "chichisuite",
+      storageBucket: "chichisuite.firebasestorage.app",
+      messagingSenderId: "286317792597",
+      appId: "1:286317792597:web:782e2f8465da12f72173dc"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const lookbookRef = collection(db, "lookbook");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const saveBtn = document.getElementById("saveBtn");
+      const promptInput = document.getElementById("promptInput");
+      const statusMsg = document.getElementById("status");
+
+      saveBtn.addEventListener("click", async () => {
+        const text = promptInput.value.trim();
+        if (!text) return alert("Write something glam first 💖");
+
+        await addDoc(lookbookRef, {
+          text,
+          date: new Date().toISOString()
+        });
+
+        promptInput.value = "";
+        statusMsg.textContent = "Saved to your glam Lookbook ✨";
+        statusMsg.style.display = 'block';
+        setTimeout(() => statusMsg.style.display = 'none', 3000);
+      });
+    });
+  </script>
+</head>
+<body>
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="prompt-builder.html">✨ Prompt Builder</a>
+    <a href="lookbook.html">📸 Lookbook</a>
+  </nav>
+
+  <h1>Build Your Glam Prompt 💄</h1>
+  <textarea id="promptInput" placeholder="Describe your look... Use tags like 'glass', 'silk', 'angel'... 💫"></textarea>
+  <button id="saveBtn">Save to Lookbook</button>
+  <div id="status" class="status">Saved!</div>
+</body>
+</html>
